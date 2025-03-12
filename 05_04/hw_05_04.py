@@ -1,11 +1,34 @@
+from functools import wraps
+
+
+def input_error(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ValueError:
+            return "Please enter 'Name' and 'Phone number'"
+        except KeyError:
+            return f"Contact not found."
+        except IndexError:
+            return "Please enter 'Name'"
+        except Exception as e:
+            return f"Unexpected error: {e}"
+        
+    return inner
+
+
 def parse_input(user_input):
-    cmd, *args = user_input.split()
+    params = user_input.split()
+    if not params:
+        return "", []
+    cmd, *args = params
     cmd = cmd.strip().lower()
     return cmd, *args
 
+
+@input_error
 def add_contact(args, contacts):
-    if len(args) != 2:
-        return "Please enter 'Name' and 'Phone number'"
     name, phone = args
     if name in contacts:
         user_input = input("Contact already exists. Do you want to update it? (yes/no): ")
@@ -16,52 +39,30 @@ def add_contact(args, contacts):
     contacts[name] = phone
     return "Contact added."
 
+
+@input_error
 def change_contact(args, contacts):
-    if len(args) != 2:
-        return "Please enter 'Name' and 'Phone number'"
     name, phone = args
-    if args in contacts:
+    if name in contacts:
         contacts[name] = phone
         return "Contact updated."
     else:
         return "Contact not found."
 
+
+@input_error
 def show_phone(args, contacts):
-    if len(args) != 1:
-        return "Please enter 'Name'"
     if args[0] in contacts:
         return contacts[args[0]]
     else:
         return "Contact not found."
 
+
 def show_all(contacts):
     if not contacts:
         return "No contacts available."
-    for key, value in contacts.items():
-        return (f"Name: {key} || Phome#: {value}")
+    
+    contacts = [(f"Name: {key} || Phone#: {value}") for key, value in contacts.items()]
 
-def main():
-    contacts = {}
-    print("Welcome to the assistant bot!")
-    while True:
-        user_input = input("Enter a command: ")
-        command, *args = parse_input(user_input)
-
-        if command in ["close", "exit"]:
-            print("Good bye!")
-            break
-        elif command == "hello":
-            print("How can I help you?")
-        elif command == "add":
-            print(add_contact(args, contacts))
-        elif command == "change":
-            print(change_contact(args, contacts))
-        elif command == "phone":
-            print(show_phone(args, contacts))
-        elif command == "all":
-            print(show_all(contacts))
-        else:
-            print("Invalid command.")
-
-if __name__ == "__main__":
-    main()
+    return "\n".join(contacts)
+   

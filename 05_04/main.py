@@ -4,6 +4,7 @@ from hw_05_04 import parse_input, add_contact, change_contact, show_phone, show_
 def main():
     contacts = {}
     print("Welcome to the assistant bot!")
+    
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
@@ -21,6 +22,7 @@ def main():
             print(show_phone(args, contacts))
         elif command == "all":
             print(show_all(contacts))
+            print(contacts)
         else:
             print("Invalid command.")
 
