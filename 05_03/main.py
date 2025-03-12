@@ -17,9 +17,13 @@ def main():
         print(f'It is not a file: {file_path}')
         return
 
-    list_of_logs = load_logs(file_path)
+    try:
+        list_of_logs = load_logs(file_path)
+    except Exception as e:
+        print(f"Error loading logs: {e}")
+        return
+    
     logs_info_by_level = count_logs_by_level(list_of_logs)
-    print(logs_info_by_level)
 
     display_log_counts(logs_info_by_level)
     
@@ -27,11 +31,14 @@ def main():
         log_type = argv[0].upper()
         details_list = filter_logs_by_level(list_of_logs, log_type)
         
-        print(f"Log details for '{log_type}' level:")
+        if not details_list:
+            print(f"No logs with level '{log_type}'")
+        else:
+            print(f"Log details for '{log_type}' level:")
 
-        for log in details_list:
-            item_log_info = " ".join(log.values())
-            print(item_log_info)
+            for log in details_list:
+                item_log_info = " ".join(log.values())
+                print(item_log_info)
 
 
 if __name__ == '__main__':

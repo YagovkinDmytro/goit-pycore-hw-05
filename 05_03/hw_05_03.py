@@ -22,23 +22,15 @@ def load_logs(file_path: str) -> list:
 
 
 def filter_logs_by_level(logs: list, level: str) -> list:
-    list_of_type_logs = []
-    
-    for log in logs:
-        for value in log.values():
-          if value == level.upper():
-              list_of_type_logs.append(log)
-
-    return list_of_type_logs
+    return [log for log in logs if level.upper() in log.values()]
 
 def count_logs_by_level(logs: list) -> dict:
     logs_info_by_level = defaultdict(int)
-    
-    for log in logs:
-        for key, value in log.items():
-            if key == "type":
-                logs_info_by_level[value] +=1
 
+    for log in logs:
+        if "type" in log: 
+            logs_info_by_level[log["type"]] += 1
+    
     return logs_info_by_level
 
 
@@ -53,5 +45,3 @@ def display_log_counts(counts: dict):
 
     for key, value in counts.items():
         print(f"{key:<{level_length}} | {value}" )
-
-
