@@ -43,5 +43,15 @@ def count_logs_by_level(logs: list) -> dict:
 
 
 def display_log_counts(counts: dict):
-    pass
+
+    level = "Рівень логування"
+    count = "Кількість"
+    level_length = max(len(level), max((map(len, counts.keys()))))
+    count_length = max(len(count), max((map(lambda number: len(str(number)), counts.values()))))
+    print(f"{level:<{level_length}} | {count:>{count_length}}")
+    print(f"-"*(level_length)+ " | " + f"-"*(count_length))
+
+    for key, value in counts.items():
+        print(f"{key:<{level_length}} | {value}" )
+
 
